@@ -15,10 +15,6 @@
 > 注意 vimplug 插件的下载需要翻墙, 请优先解决网络代理问题
 
 ```bash
-sudo apt install vim
-```
-
-```bash
 ./install.sh
 ```
 
@@ -47,6 +43,12 @@ BraceWrapping:
   BeforeCatch: true
   BeforeElse: true
   IndentBraces: true
+```
+
+bashrc 中的映射
+
+```bash
+alias copy=tee >(xargs echo -n | xclip -selection clipboard) <<< "$(cat)";
 ```
 
 ## 参考

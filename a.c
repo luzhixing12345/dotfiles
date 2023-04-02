@@ -12,3 +12,9 @@ int main() {
     // ...
     return 0;
 }
+
+
+int function(int a, int b) {
+    if (x = 1)
+}
+

@@ -19,48 +19,30 @@ nnoremap <Leader>q :wq<CR> " 在normal模式下，按下";q"可以保存并退�
 " 在光标移动时高亮匹配的括号
 set showmatch
 
-" 自定义括号匹配函数
-function! MatchParen()
-    let c = col('.') - 1
-    if c < 0
-        return
-    endif
-    let line = getline('.')
-    let s = line[c]
-    if s == '('
-        return matchparen#Match_Parentheses('(', ')')
-    elseif s == '{'
-        return matchparen#Match_Parentheses('{', '}')
-    elseif s == '['
-        return matchparen#Match_Parentheses('[', ']')
-    else
-        return
-    endif
-endfunction
+:inoremap ( ()<Esc>i
+:inoremap [ []<Esc>i
+":inoremap < <><Esc>i
+:inoremap { {}<Esc>i
+:inoremap ' ''<Esc>i
+:inoremap " ""<Esc>i
+:inoremap { {<CR>}<Esc>O
+:inoremap " ""<Esc>i
+:inoremap { {<CR>}<Esc>O
 
-" 映射括号匹配函数到快捷键 %
-nnoremap <silent> % :call MatchParen()<CR>
-
-" 括号自动匹配
-inoremap ( ()<Esc>i
-inoremap [ []<Esc>i
-inoremap { {}<Esc>i
-inoremap ' ''<Esc>i
-inoremap " ""<Esc>i
-
-" 自动换行并补全括号
-inoremap {<CR> {<CR>}<Esc>O
-inoremap " ""<Esc>i
-inoremap {<CR> {<CR>}<Esc>O
 
 let loaded_matchparen=1
+
+" 按住 Ctrl 键进行单词移动
+inoremap <C-Right> <Esc>wi
+inoremap <C-Left> <Esc>bi
+
+nnoremap <C-v> v
+
 
 
 " ======================
 " vim plug
 " ======================
-
-
 if empty(glob("~/.vim/autoload/plug.vim"))
   :exe '!curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
               \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
