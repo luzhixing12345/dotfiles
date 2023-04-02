@@ -1,47 +1,55 @@
 # vimrc
 
-本仓库为个人vim配置项
+## 背景
 
-## 使用
+非 vim 深度用户, 日常编程多使用 Vscode, 使用 vim 仅用于一些代码的验证或文件的修改预览
+
+本仓库的配置主要根据个人编码习惯对默认 vim 的键位映射做了一些调整
+
+**由于每个人编码习惯不尽相同, 所以不建议直接使用此配置**, 如有需要您可 fork 本仓库进行修改微调
+
+![20230402095215](https://raw.githubusercontent.com/learner-lu/picbed/master/20230402095215.png)
+
+## 安装
+
+> 注意 vimplug 插件的下载需要翻墙, 请优先解决网络代理问题
 
 ```bash
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-wget https://raw.githubusercontent.com/luzhixing12345/vimrc/main/.vimrc
-vim .vimrc
+sudo apt install vim
 ```
 
-进入后先下载插件
-
-```vim
-PlugInstall
+```bash
+./install.sh
 ```
 
-## 使用
+当您第一次启动 vim 的时候会开始下载插件并安装, 然后就可以开始使用了
 
-一些简单的键映射
+## 其他
 
-```txt
-nnoremap <Leader>q :q<CR>
-nnoremap <Leader>w :w<CR>
-nnoremap <Leader>g :NERDTreeToggle<CR>
-nnoremap <Leader>f :NERDTreeFind<CR>
+.clang-format
+
+```
+BasedOnStyle: Google
+IndentWidth: 4
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: false
+ColumnLimit: 100
+BinPackArguments: false
+BraceWrapping:
+  AfterStruct: true
+  AfterFunction: true
+  AfterClass: true
+  AfterControlStatement: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: true
 ```
 
-[vim color](https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim)
+## 参考
 
-[color](https://www.ditig.com/256-colors-cheat-sheet)
-
-`vscode.vim` 个人配置颜色
-
-在 `c.vim` 最后添加
-
-```vim
-" Highlight Class and Function names
-syn match    cCustomParen    "(" co:ntains=cParen,cCppParen
-syn match    cCustomFunc     "\w\+\s*(" contains=cCustomParen
-syn match    cCustomScope    "::"
-syn match    cCustomClass    "\w\+\s*::" contains=cCustomScope
-
-hi def link cCustomFunc  Function
-hi def link cCustomClass Function
-```
+- [vim color](https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim)
+- [color](https://www.ditig.com/256-colors-cheat-sheet)
