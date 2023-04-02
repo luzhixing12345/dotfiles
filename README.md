@@ -48,8 +48,10 @@ BraceWrapping:
 bashrc 中的映射
 
 ```bash
-alias copy=tee >(xargs echo -n | xclip -selection clipboard) <<< "$(cat)";
+alias copy='tee >(xargs echo -n | xclip -selection clipboard) <<< "$(cat)"'
 ```
+
+我们可以使用例如 `pwd | copy` 将输出复制到剪切板， **但是需要注意如果输出中含有引号会存在问题**
 
 ## 参考
 
