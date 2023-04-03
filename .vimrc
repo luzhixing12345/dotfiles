@@ -28,7 +28,7 @@ set showmatch
 :inoremap { {<CR>}<Esc>O
 :inoremap " ""<Esc>i
 :inoremap { {<CR>}<Esc>O
-
+nnoremap <C-h> gg=G
 
 let loaded_matchparen=1
 
