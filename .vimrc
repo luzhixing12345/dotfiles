@@ -43,12 +43,6 @@ nnoremap <C-v> v
 " ======================
 " vim plug
 " ======================
-if empty(glob("~/.vim/autoload/plug.vim"))
-  :exe '!curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-              \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  au VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
 
 call plug#begin("~/.vim/plugged")
 Plug 'tomasiser/vim-code-dark'

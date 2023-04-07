@@ -24,6 +24,8 @@ then
     echo "sudo apt-get install curl"
 fi
 
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 cp .vimrc ~/.vimrc
 mkdir -p ~/.vim/syntax
 cp c.vim ~/.vim/syntax/c.vim
