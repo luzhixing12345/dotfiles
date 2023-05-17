@@ -1,10 +1,8 @@
-# vimrc
+# C-dev-environment
 
 ## 背景
 
-非 vim 深度用户, 日常编程多使用 Vscode, 使用 vim 仅用于一些代码的验证或文件的修改预览
-
-本仓库的配置主要根据个人编码习惯对默认 vim 的键位映射做了一些调整
+本人为
 
 **由于每个人编码习惯不尽相同, 所以不建议直接使用此配置**, 如有需要您可 fork 本仓库进行修改微调
 
@@ -24,36 +22,9 @@ vim ~/.vimrc
 
 ## 其他
 
-.clang-format
+[.clang-format](./.clang-format)
 
-```
-BasedOnStyle: Google
-IndentWidth: 4
-AllowShortFunctionsOnASingleLine: None
-AllowShortBlocksOnASingleLine: Never
-AllowShortIfStatementsOnASingleLine: false
-ColumnLimit: 100
-BinPackArguments: false
-BraceWrapping:
-  AfterStruct: true
-  AfterFunction: true
-  AfterClass: true
-  AfterControlStatement: true
-  SplitEmptyFunction: false
-  SplitEmptyRecord: false
-  SplitEmptyNamespace: false
-  BeforeCatch: true
-  BeforeElse: true
-  IndentBraces: true
-```
-
-bashrc 中的映射
-
-```bash
-alias copy='tee >(xargs echo -n | xclip -selection clipboard) <<< "$(cat)"'
-```
-
-我们可以使用例如 `pwd | copy` 将输出复制到剪切板， **但是需要注意如果输出中含有引号会存在问题**
+[launch.json](./.vscode/launch.json)
 
 ## 参考
 

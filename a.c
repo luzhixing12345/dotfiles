@@ -8,6 +8,7 @@ int main() {
         perror("Failed to open file");
         exit(errno);
     }
+    int x = open
 
     // ...
     return 0;

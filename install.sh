@@ -8,14 +8,6 @@ then
     echo "sudo apt-get install vim"
 fi
 
-# 检查xclip是否已安装
-#if ! command -v xclip &> /dev/null
-#then
-#    echo "xclip 未安装"
-#    echo "请执行以下命令安装xclip："
-#    echo "sudo apt-get install xclip"
-#fi
-
 # 检查curl是否已安装
 if ! command -v curl &> /dev/null
 then
@@ -25,9 +17,7 @@ then
 fi
 
 if [ ! -f ~/.vim/autoload/plug.vim ]; then
-
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 fi
 
 cp .vimrc ~/.vimrc
