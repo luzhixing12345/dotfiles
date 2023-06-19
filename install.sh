@@ -1,27 +1,24 @@
 #!/bin/bash
 
-# 检查vim是否已安装
-if ! command -v vim &> /dev/null
-then
-    echo "vim 未安装"
-    echo "请执行以下命令安装vim："
-    echo "sudo apt-get install vim"
-fi
-
-# 检查curl是否已安装
-if ! command -v curl &> /dev/null
-then
-    echo "curl 未安装"
-    echo "请执行以下命令安装curl："
-    echo "sudo apt-get install curl"
-fi
-
-if [ ! -f ~/.vim/autoload/plug.vim ]; then
-    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-fi
+sudo apt install git vim build-essential zsh
 
 cp .vimrc ~/.vimrc
 mkdir -p ~/.vim/syntax
-
 cp c.vim ~/.vim/syntax/c.vim
-echo "finished!"
+
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    && vim -c 'source ~/.vimrc | PlugInstall' -c ':qall'
+
+
+wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
+sh Anaconda3-2023.03-1-Linux-x86_64.sh
+
+git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-autosuggestions
+mkdir $ZSH_CUSTOM/plugins/incr
+curl -fsSL https://mimosa-pudica.net/src/incr-0.2.zsh -o $ZSH_CUSTOM/plugins/incr/incr.zsh
+
+cp .zshrc ~/.zshrc
+sed -i 's/^plugins=.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
+chsh -s /bin/zsh
