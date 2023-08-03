@@ -13,7 +13,9 @@ tmux source-file ~/.tmux.conf
 tmux kill-server
 ```
 
-<kbd>ctrl</kbd> + <kbd>b</kbd> => <kbd>ctrl</kbd> + <kbd>a</kbd> 
+<kbd>ctrl</kbd> + <kbd>b</kbd> => <kbd>ctrl</kbd> + <kbd>x</kbd> 
+
+> 不使用 ctrl+a 主要是因为避免和 qemu 冲突
 
 水平创建窗口 => `p`
 
