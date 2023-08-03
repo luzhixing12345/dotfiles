@@ -1,8 +1,8 @@
 #!/bin/bash
+sudo apt install -y git vim build-essential tmux
 
-sudo apt install git vim build-essential zsh
-
-cp .vimrc ~/.vimrc
+# vim 配置
+ln -s .vimrc ~/.vimrc
 mkdir -p ~/.vim/syntax
 cp c.vim ~/.vim/syntax/c.vim
 
@@ -10,15 +10,21 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
     && vim -c 'source ~/.vimrc | PlugInstall' -c ':qall'
 
+# tmux 配置
+ln -s .tmux.conf ~/.tmux.conf
+tmux source-file ~/.tmux.conf
 
-wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
-sh Anaconda3-2023.03-1-Linux-x86_64.sh
+# docker
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
 
-git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-autosuggestions
-mkdir $ZSH_CUSTOM/plugins/incr
-curl -fsSL https://mimosa-pudica.net/src/incr-0.2.zsh -o $ZSH_CUSTOM/plugins/incr/incr.zsh
+# bashrc
+cat .bashrc >> ~/.bashrc
+source ~/.bashrc
 
-cp .zshrc ~/.zshrc
-sed -i 's/^plugins=.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
-chsh -s /bin/zsh
+# gdbinit
+mkdir -p ~/.config/gdb
+ln -s ./gdbinit ~/.config/gdb/gdbinit/
+
+# ssh
+ssh-keygen -t rsa -C "luzhixing12345@163.com"
+cat ~/.ssh/id_rsa.pub

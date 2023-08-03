@@ -4,8 +4,6 @@
 
 非 terminal 深度用户, 简单同步配置一下基础环境
 
-文档: [dotfiles document](https://luzhixing12345.github.io/dotfiles/)
-
 ## 安装
 
 如果没有配置网络代理
@@ -102,3 +100,4 @@ BraceWrapping:
 
 - [vim color](https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim)
 - [color](https://www.ditig.com/256-colors-cheat-sheet)
+- [ruanyifeng tmux](https://www.ruanyifeng.com/blog/2019/10/tmux.html)
