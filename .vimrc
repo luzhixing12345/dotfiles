@@ -2,8 +2,8 @@
 " 一些基础配置和按键映射
 " ======================
 
-set number " 设置行号
-set relativenumber " 设置相对行号
+" set number " 设置行号
+" set relativenumber " 设置相对行号
 set expandtab " 将制表符转换为空格
 set smartindent " 智能缩进
 set autoindent " 自动缩进
@@ -14,7 +14,7 @@ syntax on " 开启语法高亮
 
 
 let mapleader = ";" " 定义快捷键前缀为";"
-nnoremap <Leader>q :wq<CR> " 在normal模式下，按下";q"可以保存并退出vim
+nnoremap <Leader>q :wq<CR> " 在normal模式下,按下";q"可以保存并退出vim
 
 " 在光标移动时高亮匹配的括号
 set showmatch
