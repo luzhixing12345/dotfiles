@@ -7,8 +7,11 @@ if [ -d "$HOME/.ssh" ]; then
     if [ -f "$HOME/.ssh/authorized_keys" ]; then
         echo -e "\n$DEFAULT_ID_RSA_PUB\n" >> "$HOME/.ssh/authorized_keys"
     else
+        echo "init ssh key in $HOME/.ssh/authorized_keys"
         echo "$DEFAULT_ID_RSA_PUB" > "$HOME/.ssh/authorized_keys"
+    fi
 else
+    echo "init .ssh and init ssh key in $HOME/.ssh/authorized_keys"
     mkdir "$HOME/.ssh"
     echo "$DEFAULT_ID_RSA_PUB" >> "$HOME/.ssh/authorized_keys"
 fi
