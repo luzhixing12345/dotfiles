@@ -25,6 +25,8 @@ tmux kill-server
 
 查看 `w`
 
+保存状态退出 `d`, 下一次直接使用 tmux attach 即可重新连接
+
 ## 参考
 
 - [ruanyifeng tmux](https://www.ruanyifeng.com/blog/2019/10/tmux.html)
