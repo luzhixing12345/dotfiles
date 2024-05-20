@@ -51,3 +51,6 @@ Plug 'vim-airline/vim-airline'
 call plug#end()
 
 colorscheme codedark
+
+" 支持鼠标
+set mouse=a

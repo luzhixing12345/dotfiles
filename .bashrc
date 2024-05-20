@@ -13,7 +13,7 @@ export host_ip=$(cat /etc/resolv.conf |grep "nameserver" |cut -f 2 -d " ")
 export http_proxy="http://localhost:20171"
 export https_proxy="http://localhost:20171"
 
-alias clangf="cp ~/dotfiles/.clang-format ./"
+alias clangf="ln ~/dotfiles/.clang-format ./"
 
 # xfce4
 export DISPLAY="$host_ip:0"
