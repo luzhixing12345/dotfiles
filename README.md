@@ -14,6 +14,28 @@
 
 ## 其他
 
+### nvim+lazyvim
+
+```bash
+git clone https://github.com/neovim/neovim --depth=1
+cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
+sudo make install
+```
+
+刷新
+
+```bash
+git clone https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git
+nvim
+```
+
+add in .bashrc
+
+```bash
+alias vim="nvim"
+```
+
 ### 初始化 ssh 的 key
 
 > 因为 `authorized_keys` 总是打不对
