@@ -49,3 +49,14 @@ set nobackup
 set nowritebackup
 set noswapfile
 "
+
+call plug#begin("~/.vim/plugged")
+Plug 'tomasiser/vim-code-dark'
+Plug 'morhetz/gruvbox'
+Plug 'vim-airline/vim-airline'
+call plug#end()
+
+colorscheme codedark
+
+" 支持鼠标
+set mouse=a

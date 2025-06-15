@@ -12,16 +12,6 @@ EMAIL="luzhixing12345@163.com"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
 
-# tmux 配置
-tmux_conf_path=~/.tmux.conf
-
-if [ ! -e "$tmux_conf_path" ]; then
-    echo "Creating $tmux_conf_path..."
-    ln -s $DOTFILE_PATH/.tmux.conf $tmux_conf_path
-    tmux source-file $tmux_conf_path
-else
-    echo "$tmux_conf_path already exists."
-fi
 
 
 # bashrc
