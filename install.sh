@@ -4,6 +4,7 @@ sudo apt install -y git vim build-essential tmux clang-format
 DOTFILE_PATH=$(pwd)
 EMAIL="luzhixing12345@163.com"
 
+<<<<<<< HEAD
 # tmux 配置
 tmux_conf_path=~/.tmux.conf
 
@@ -14,6 +15,16 @@ if [ ! -e "$tmux_conf_path" ]; then
 else
     echo "$tmux_conf_path already exists."
 fi
+=======
+# read -p "是否初始化 vim? (y/n): " choice
+# if [ "$choice" == "y" ]; then
+    
+# fi
+
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+
+>>>>>>> 58c1c343e09a6b4421af1f4e16744c7e311f2769
 
 cat $DOTFILE_PATH/.bashrc >> ~/.bashrc
 source ~/.bashrc
