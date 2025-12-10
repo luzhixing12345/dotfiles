@@ -5,10 +5,10 @@
             "name": "debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/ls",
-            "args": ["/home/kamilu/"],
+            "program": "${workspaceFolder}/src/ls", // 改成想要调试的程序的路径
+            "args": ["/home/kamilu/"], // 有参数加参数
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}", // 如果想要设置当前位于其他目录修改这里,比如 ls 查看其他目录
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
