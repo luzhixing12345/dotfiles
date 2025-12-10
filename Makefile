@@ -98,6 +98,7 @@ WARNING += -Wundef
 WARNING += -Wvolatile-register-var
 WARNING += -Wno-format-nonliteral
 WARNING += -Wno-pedantic
+WARNING += -Wno-unused-result
 # if SRC_EXT is c
 ifeq ($(SRC_EXT),c)
 WARNING += -Wnested-externs
@@ -219,6 +220,7 @@ $(T3): $(OBJS-T3)
 multi-exe: $(MULTI_EXE_TARGETS)
 .PHONY: multi-exe
 
+CFLAGS_DYNOPT += -fPIC
 $(OBJS):
 %.o: %.$(SRC_EXT)
 ifeq ($(C),1)
@@ -242,8 +244,9 @@ install: all
 
 clean:
 	$(E) "  CLEAN\n"
-	$(Q) rm -f $(DEPS) $(OBJS) $(PROGRAM)
-	$(Q) rm -f $(PROGRAM) $(EXECUTABLES)
+	$(Q) rm -f $(DEPS) $(OBJS)
+	$(Q) rm -f $(EXECUTABLES)
+	$(Q) [ -f $(PROGRAM) ] && rm -f $(PROGRAM) || true
 	$(Q) rm -f $(LIBFDT_STATIC)
 	$(Q) rm -f $(LIBFDT_DYNAMIC)
 	$(Q) rm -f $(MULTI_EXE_TARGETS) $(MULTI_EXE_OBJS)
