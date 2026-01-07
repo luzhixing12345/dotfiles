@@ -1,18 +1,15 @@
 # dotfiles
 
-## 简介
-
 非 terminal 深度用户, 简单同步配置一下基础环境
 
-文档: [dotfiles document](https://luzhixing12345.github.io/dotfiles/)
+## scripts
 
-## 安装
+本目录下的脚本工具集合：
 
-```bash
-./install.sh
-```
-
-## 其他
+- **create_user.sh**: 创建新用户并赋予 sudo 权限，自动完成用户创建和权限配置
+- **download_apt.sh**: 离线下载 APT 软件包及其依赖，用于离线安装场景
+- **remove_kernel.sh**: 交互式删除指定版本的 Linux 内核，避免误删
+- **switch_kernel.sh**: 交互式切换 Linux 内核版本，显示当前运行的内核
 
 ### nvim+lazyvim
 
@@ -28,31 +25,6 @@ sudo make install
 git clone https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 nvim
-```
-
-add in .bashrc
-
-```bash
-alias vim="nvim"
-```
-
-### 初始化 ssh 的 key
-
-> 因为 `authorized_keys` 总是打不对
-
-```bash
-wget -O - https://raw.githubusercontent.com/luzhixing12345/dotfiles/main/scripts/ssh.sh | sudo bash 
-```
-
-### ssh
-
-```bash
-ssh-keygen -t rsa -C "luzhixing12345@163.com"
-cat ~/.ssh/id_rsa.pub
-```
-
-```bash
-ssh -T git@github.com
 ```
 
 ## 参考
