@@ -22,17 +22,30 @@ rwildcard = $(foreach d, $(filter-out .., $(wildcard $1*)), \
 #      $ gcc $(SRC_PATH)/file1.$(SRC_EXT) -o file1
 #      $ gcc $(SRC_PATH)/file2.$(SRC_EXT) -o file2
 # ------------------------- #
-default: lib
+default: all
 
 # ------------------------- #
 #          PROJECT          #
 # ------------------------- #
 CC          	:= gcc
-SRC_PATH    	:= clib
+SRC_PATH    	:= src
 SRC_EXT     	:= c
 BUILD_PATH 		:= ./build
 EXCLUDE_SRC 	:= # src/func.c
-TARGET      	:= clib
+TARGET      	:= kperf
+
+# ------------------------- #
+#     BUILD DEPENDENCIES    #
+# ------------------------- #
+# for git submodule build dependencies
+# BUILD_DEP_LIB	:= libbpf bpftool
+
+# # creat a dep-<name> target for each dependency $(DEP_TARGETS)
+# dep-libbpf:
+# 	$(MAKE) -C libbpf/src BUILD_STATIC_ONLY=1
+
+# dep-bpftool:
+# 	$(MAKE) -C bpftool/src
 
 # ------------------------- #
 #            LIB            #
@@ -165,7 +178,11 @@ ifeq ($(MAKECMDGOALS),debug)
 CFLAGS += -g
 endif
 
-all: $(PROGRAM)
+# build dependencies
+DEP_NAMES := $(strip $(BUILD_DEP_LIB))
+DEP_TARGETS := $(addprefix dep-,$(DEP_NAMES))
+
+all: $(DEP_TARGETS) $(PROGRAM)
 .PHONY: all
 
 debug: default
@@ -291,4 +308,3 @@ help:
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
 endif
-
