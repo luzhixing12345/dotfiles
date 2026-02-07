@@ -4,6 +4,7 @@
 VERSION 		:= 0
 PATCHLEVEL 		:= 0
 SUBLEVEL 		:= 1
+MAKEFLAGS 		+= -j$(shell nproc)
 
 rwildcard = $(foreach d, $(filter-out .., $(wildcard $1*)), \
              $(call rwildcard,$d/,$2) $(filter $2, $d))
@@ -22,7 +23,8 @@ rwildcard = $(foreach d, $(filter-out .., $(wildcard $1*)), \
 #      $ gcc $(SRC_PATH)/file1.$(SRC_EXT) -o file1
 #      $ gcc $(SRC_PATH)/file2.$(SRC_EXT) -o file2
 # ------------------------- #
-default: all
+DEFAULT_TARGETS := all
+default: $(DEFAULT_TARGETS)
 
 # ------------------------- #
 #          PROJECT          #
@@ -30,22 +32,9 @@ default: all
 CC          	:= gcc
 SRC_PATH    	:= src
 SRC_EXT     	:= c
-BUILD_PATH 		:= ./build
+BUILD_PATH 		:= build
 EXCLUDE_SRC 	:= # src/func.c
-TARGET      	:= kperf
-
-# ------------------------- #
-#     BUILD DEPENDENCIES    #
-# ------------------------- #
-# for git submodule build dependencies
-# BUILD_DEP_LIB	:= libbpf bpftool
-
-# # creat a dep-<name> target for each dependency $(DEP_TARGETS)
-# dep-libbpf:
-# 	$(MAKE) -C libbpf/src BUILD_STATIC_ONLY=1
-
-# dep-bpftool:
-# 	$(MAKE) -C bpftool/src
+TARGET      	:= main
 
 # ------------------------- #
 #            LIB            #
@@ -69,15 +58,25 @@ OBJS-T2 			:= $(SRC_T2:.$(SRC_EXT)=.o)
 OBJS-T3 			:= $(SRC_T3:.$(SRC_EXT)=.o)
 MULTI_EXE_TARGETS 	:= $(T1) $(T2) $(T3)
 MULTI_EXE_OBJS 	  	:= $(OBJS-T1) $(OBJS-T2) $(OBJS-T3)
+
+
 # ------------------------- #
 #          FLAGS            #
 # ------------------------- #
 CFLAGS 			:= -O2
-INCLUDE_PATH 	:= # -I./include
-LDFLAGS 		:= # -L./lib
+INCLUDE_PATH 	:= 
+LDFLAGS 		:= 
 DEFINES     	:= # -DDEBUG
 CFLAGS          += $(INCLUDE_PATH)
+
 # ------------------------- #
+#     BUILD DEPENDENCIES    #
+# ------------------------- #
+# for git submodule build dependencies
+BUILD_DEP_LIB	:= #libbpf bpftool
+# creat a dep-<name> target for each dependency $(DEP_TARGETS)
+# dep-libbpf: CMD = $(MAKE) -C libbpf/src
+# dep-bpftool: CMD = $(MAKE) -C bpftool/src
 
 # ------------------------- #
 #          BINARIES         #
@@ -113,7 +112,6 @@ WARNING += -Wno-unused-result
 # if SRC_EXT is c
 ifeq ($(SRC_EXT),c)
 WARNING += -Wnested-externs
-WARNING += -Wno-discarded-qualifiers
 endif
 CFLAGS	+= $(WARNING)
 
@@ -134,10 +132,45 @@ export E Q
 #        auto config        #
 # ------------------------- #
 # create build dirs
-BUILD_BIN_PATH 	:= $(BUILD_PATH)/bin
-BUILD_LIB_PATH 	:= $(BUILD_PATH)/lib
-BUILD_DIRS := $(BUILD_BIN_PATH) $(BUILD_LIB_PATH)
-$(shell mkdir -p $(BUILD_DIRS))
+# Compute bin/lib output paths depending on BUILD_PATH and DEFAULT_TARGETS.
+# - If BUILD_PATH is '.', do not create bin/lib subdirectories; outputs go to current dir.
+# - If BUILD_PATH is not '.', and DEFAULT_TARGETS contains both 'lib' and other targets,
+#   create $(BUILD_PATH)/bin and $(BUILD_PATH)/lib.
+# - If DEFAULT_TARGETS does not contain 'lib' (only binaries), put executables directly
+#   into $(BUILD_PATH) (not $(BUILD_PATH)/bin).
+
+HAS_LIB := $(filter lib,$(DEFAULT_TARGETS))
+NUM_DEFAULTS := $(words $(DEFAULT_TARGETS))
+
+ifeq ($(BUILD_PATH),.)
+	BUILD_BIN_PATH := .
+	BUILD_LIB_PATH := .
+	BUILD_INCLUDE_PATH := .
+	MAKE_DIRS :=
+else
+	ifneq ($(HAS_LIB),)
+		ifneq ($(NUM_DEFAULTS),1)
+			# default contains lib and other targets -> use bin/ and lib/
+			BUILD_BIN_PATH := $(BUILD_PATH)/bin
+			BUILD_LIB_PATH := $(BUILD_PATH)/lib
+			BUILD_INCLUDE_PATH := $(BUILD_PATH)/include
+			MAKE_DIRS := $(BUILD_BIN_PATH) $(BUILD_LIB_PATH) $(BUILD_INCLUDE_PATH)
+		else
+			# default only builds lib -> create lib/ only, put bin in build/
+			BUILD_BIN_PATH := $(BUILD_PATH)
+			BUILD_LIB_PATH := $(BUILD_PATH)/lib
+			BUILD_INCLUDE_PATH := $(BUILD_PATH)/include
+			MAKE_DIRS := $(BUILD_LIB_PATH) $(BUILD_INCLUDE_PATH)
+		endif
+	else
+		# default does not build lib -> put executables directly under build/
+		BUILD_BIN_PATH := $(BUILD_PATH)
+		BUILD_LIB_PATH := $(BUILD_PATH)
+		MAKE_DIRS := $(BUILD_PATH)
+	endif
+endif
+
+$(shell if [ -n "$(MAKE_DIRS)" ]; then mkdir -p $(MAKE_DIRS); fi )
 DESTDIR_SQ := $(shell echo "$(DESTDIR)" | sed "s/'/'\\\\''/g;1s/^/'/;\$$s/$$/'/")
 bindir_SQ  := $(shell echo "$(bindir)" | sed "s/'/'\\\\''/g;1s/^/'/;\$$s/$$/'/")
 # final output binary
@@ -178,9 +211,13 @@ ifeq ($(MAKECMDGOALS),debug)
 CFLAGS += -g
 endif
 
-# build dependencies
+
+# build dependency
 DEP_NAMES := $(strip $(BUILD_DEP_LIB))
 DEP_TARGETS := $(addprefix dep-,$(DEP_NAMES))
+dep-%:
+	$(Q) $(CMD) || (echo "build $* failed"; exit 1);
+	
 
 all: $(DEP_TARGETS) $(PROGRAM)
 .PHONY: all
@@ -196,7 +233,7 @@ debug: default
 $(PROGRAM): $(OBJS)
 	$(E) "  LINK    \033[1;32m%s\033[0m\n" $@
 	$(Q) $(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $@
-	$(E) "  Binary program $(PROGRAM) is ready.\n"
+	$(E) "  Binary  $(PROGRAM) is ready.\n"
 
 # ------------------------- #
 #            libs           #
@@ -214,11 +251,15 @@ $(LIBFDT_DYNAMIC): $(OBJS)
 	$(E) "  LINK    \033[1;32m%s\033[0m\n" $@
 	$(Q) $(CC) -fPIC -shared $(OBJS) -o $@
 	$(E) "  dynamic lib $@ is ready.\n"
-	$(E) "  use lib with \033[1m-L$(BUILD_LIB_PATH) -l$(TARGET)\033[0m\n"
+
+# move all $(SRC_PATH)/*.h to $(BUILD_INCLUDE_PATH)
+header_build:
+	$(Q) mkdir -p $(BUILD_INCLUDE_PATH)
+	$(Q) cp $(SRC_PATH)/*.h $(BUILD_INCLUDE_PATH)/
 
 # compile both static and dynamic lib
-lib: $(LIBFDT_STATIC) $(LIBFDT_DYNAMIC)
-.PHONY: lib
+lib: $(LIBFDT_STATIC) $(LIBFDT_DYNAMIC) header_build
+.PHONY: lib header_build header_install
 
 # ------------------------- #
 #         each exe          #
@@ -249,6 +290,40 @@ $(T3): $(OBJS-T3)
 multi-exe: $(MULTI_EXE_TARGETS)
 .PHONY: multi-exe
 
+# ------------------------- #
+#        bpf program        #
+# ------------------------- #
+
+BPF_PATH = src/bpf
+BPF_SRC = $(call rwildcard, $(BPF_PATH), %.bpf.c)
+BPF_OBJS = $(BPF_SRC:.bpf.c=.bpf.o)
+BPF_SKELETONS = $(BPF_SRC:.bpf.c=.skel.h)
+DEPS	+= $(foreach obj,$(BPF_OBJS),\
+		$(subst $(comma),_,$(dir $(obj)).$(notdir $(obj)).d))
+CLANG   := clang
+BPFTOOL := bpftool
+
+# Generate vmlinux.h if it doesn't exist
+src/bpf/vmlinux.h:
+	$(Q) if command -v $(BPFTOOL) >/dev/null 2>&1; then \
+		$(BPFTOOL) btf dump file /sys/kernel/btf/vmlinux format c > $@; \
+	else \
+		touch $@; \
+	fi
+
+$(BPF_OBJS): src/bpf/vmlinux.h
+
+%.skel.h: %.bpf.o
+	$(E) "  GEN     %s\n" $@
+	$(Q) $(BPFTOOL) gen skeleton $< > $@
+%.bpf.o: %.bpf.c
+	$(E) "  CLANG   %s\n" $@
+	$(Q) $(CLANG) $(c_flags) -g -target bpf -c $< -o $@
+	$(Q) mkdir -p $(BUILD_PATH)/bpf
+	$(Q) cp $@ $(BUILD_PATH)/bpf
+
+bpf: $(BPF_OBJS) $(BPF_SKELETONS)
+
 CFLAGS_DYNOPT += -fPIC
 $(OBJS):
 %.o: %.$(SRC_EXT)
@@ -259,32 +334,48 @@ endif
 	$(E) "  CC      %s\n" $@
 	$(Q) $(CC) -c $(c_flags) $(CFLAGS_DYNOPT) $< -o $@
 
+src/kperf/bpf_loader.o: src/kperf/bpf_loader.c $(BPF_SKELETONS)
+	$(E) "  CC      %s\n" $@
+	$(Q) $(CC) -c $(c_flags) $(CFLAGS_DYNOPT) $< -o $@
+
 # ------------------------- #
 #          使用方法
 # ------------------------- #
-.PHONY: clean distclean lib release tar all test
+.PHONY: clean distclean lib release tar all test pack 
 
 install: all
 	$(E) "  INSTALL\n"
-	$(Q) $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)' 
-	$(Q) $(INSTALL) $(PROGRAM) '$(DESTDIR_SQ)$(bindir_SQ)' 
+	$(Q) $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'
+	$(Q) $(INSTALL) -d -m 755 '$(DESTDIR_SQ)/etc/kperf'
+	$(Q) $(INSTALL) -d -m 755 '$(DESTDIR_SQ)/usr/share/bash-completion/completions'
+	$(Q) $(INSTALL) -m 755 $(PROGRAM) '$(DESTDIR_SQ)$(bindir_SQ)'
+	$(Q) $(INSTALL) -m 644 assets/* '$(DESTDIR_SQ)/etc/kperf/'
+	$(Q) $(INSTALL) -m 644 kperf-completion.bash '$(DESTDIR_SQ)/usr/share/bash-completion/completions/kperf'
 .PHONY: install
 
+test:
+	$(MAKE) -C test
+
+testclean:
+	$(MAKE) -C test clean
 
 clean:
 	$(E) "  CLEAN\n"
 	$(Q) rm -f $(DEPS) $(OBJS)
 	$(Q) rm -f $(EXECUTABLES)
 	$(Q) [ -f $(PROGRAM) ] && rm -f $(PROGRAM) || true
-	$(Q) rm -rf $(BUILD_BIN_PATH) $(BUILD_LIB_PATH) $(BUILD_PATH) > /dev/null 2>&1 || true
+	$(Q) if [ -n "$(BUILD_BIN_PATH)" -a "$(BUILD_BIN_PATH)" != "." -a "$(BUILD_BIN_PATH)" != "$(SRC_PATH)" ]; then rm -rf "$(BUILD_BIN_PATH)" > /dev/null 2>&1 || true; fi
+	$(Q) if [ -n "$(BUILD_LIB_PATH)" -a "$(BUILD_LIB_PATH)" != "." -a "$(BUILD_LIB_PATH)" != "$(SRC_PATH)" ]; then rm -rf "$(BUILD_LIB_PATH)" > /dev/null 2>&1 || true; fi
+	$(Q) if [ -n "$(BUILD_INCLUDE_PATH)" -a "$(BUILD_INCLUDE_PATH)" != "." -a "$(BUILD_INCLUDE_PATH)" != "$(SRC_PATH)" ]; then rm -rf "$(BUILD_INCLUDE_PATH)" > /dev/null 2>&1 || true; fi
+	$(Q) if [ -n "$(BUILD_PATH)" -a "$(BUILD_PATH)" != "." -a "$(BUILD_PATH)" != "$(SRC_PATH)" ]; then rm -rf "$(BUILD_PATH)" > /dev/null 2>&1 || true; fi
 	$(Q) rm -f $(LIBFDT_STATIC)
 	$(Q) rm -f $(LIBFDT_DYNAMIC)
 	$(Q) rm -f $(MULTI_EXE_TARGETS) $(MULTI_EXE_OBJS)
+	$(Q) rm -f $(BPF_OBJS) $(BPF_SKELETONS)
+
 release:
-	$(MAKE) -j4
-	mkdir $(RELEASE)
-	@cp $(EXE) $(RELEASE)/ 
-	tar -cvf $(TARGET).tar $(RELEASE)/
+	$(MAKE) clean
+	$(MAKE) default CFLAGS="$(CFLAGS) -DRELEASE" LDFLAGS="-static $(LDFLAGS)"
 
 # 输出配置信息, 包括 CFLAGS, LDFLAGS, LIBS
 config:
