@@ -11,6 +11,12 @@ cp -r .vim ~/.vim
 cp .vimrc ~/.vimrc
 ```
 
+设置 git 的默认提交方式是 vim
+
+```bash
+git config --global core.editor "vim"
+```
+
 ## scripts
 
 本目录下的脚本工具集合：
