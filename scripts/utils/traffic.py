@@ -1,5 +1,13 @@
 ﻿#!/usr/bin/env python3
+
+'''
+查看 v2ray 节点的流量使用情况，统计每个节点的总流量，并显示前10个节点的流量排名。
+需要先将 v2ray 的流量日志导出为 CSV 格式，包含至少 "node_name" 和 "traffic" 两列。
+'''
+
+
 import csv
+import os
 from collections import defaultdict
 from prettytable import PrettyTable
 
@@ -22,6 +30,10 @@ def human(n):
         n /= 1024
 
 traffic_sum = defaultdict(float)
+
+if not os.path.exists("export.csv"):
+    print("Error: export.csv not found. Please export the v2ray traffic log to CSV format and save it as export.csv.")
+    exit(1)
 
 with open("export.csv", newline="", encoding="utf-8-sig") as f:
     reader = csv.DictReader(f)

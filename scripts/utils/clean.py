@@ -1,4 +1,8 @@
 
+'''
+清除论文引用的 []
+'''
+
 import re
 
 while True:

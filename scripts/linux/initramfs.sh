@@ -1,4 +1,5 @@
 
+# Usage: 查看内核包含的模块，加入黑名单，更新 initramfs
 # https://chatgpt.com/share/690abaeb-f248-8012-bda7-b16a07dc56b0
 lsinitramfs /boot/initrd.img-$(uname -r) | grep -i mem
 
