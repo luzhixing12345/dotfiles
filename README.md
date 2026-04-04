@@ -36,6 +36,12 @@ git config --global core.editor "vim"
 - 统计 `export.csv` 中各节点流量，输出前 10 名和总流量：[traffic.py](scripts/utils/traffic.py)
 - 将命令行参数转换成 VS Code `launch.json` 里的 `args` 格式：[vscode_args.py](scripts/utils/vscode_args.py)
 
+### `scripts/ai`
+
+- 优化 ASR 自动生成的中文字幕，读取当前目录下的 `1.srt`，输出为 `1_optimized.srt`：[cation_opt.py](scripts/ai/cation_opt.py)
+- 从文本中提取英文单词、按出现顺序去重，并输出逗号分隔结果，默认读取 `1.txt`，写入 `1.new.txt`：[extract_word.py](scripts/ai/extract_word.py)
+
+
 ## 参考
 
 - [vim color](https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim)
