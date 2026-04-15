@@ -7,8 +7,7 @@
 相关 vim 插件已经下载到 .vim/ 中
 
 ```bash
-cp -r .vim ~/.vim
-cp .vimrc ~/.vimrc
+./setup_vim.sh
 ```
 
 设置 git 的默认提交方式是 vim
